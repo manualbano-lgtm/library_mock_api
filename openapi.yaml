@@ -1,0 +1,243 @@
+openapi: 3.0.3
+info:
+  title: Complete Library Management API
+  version: 1.3.0
+  description: Secured API to manage books and authors featuring full CRUD operations and list pagination.
+
+security:
+  - BearerAuth: []
+
+paths:
+  /books:
+    get:
+      summary: Get a list of books
+      description: Returns a paginated array of books. Can be filtered by author ID.
+      parameters:
+        - name: authorId
+          in: query
+          required: false
+          description: Filter books by a specific author's UUID
+          schema:
+            type: string
+            format: uuid
+        - name: limit
+          in: query
+          required: false
+          description: The number of items to return (maximum page size)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          required: false
+          description: The number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: A successful paginated list of books.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      summary: Add a new book
+      description: Creates a new book entry in the library database.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookInput'
+      responses:
+        '201':
+          description: Book successfully created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /books/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The unique UUID of the book
+        schema:
+          type: string
+          format: uuid
+
+    put:
+      summary: Update an existing book
+      description: Updates all fields of a specific book record using its unique ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookInput'
+      responses:
+        '200':
+          description: Book successfully updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    delete:
+      summary: Delete a book
+      description: Permanently removes a book record from the database.
+      responses:
+        '204':
+          description: Book successfully deleted. No content returned.
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /authors:
+    get:
+      summary: Get a list of authors
+      description: Returns an array containing all authors in the library system.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 20
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: A successful list of authors.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    BadRequestError:
+      description: Invalid payload or validation constraints failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorModel'
+    UnauthorizedError:
+      description: Missing, invalid, or expired authentication token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorModel'
+    NotFoundError:
+      description: The referenced resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorModel'
+
+  schemas:
+    Book:
+      type: object
+      required:
+        - id
+        - title
+        - authorId
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          example: "The Hobbit"
+        isbn:
+          type: string
+          pattern: '^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$'
+          example: "978-0261102217"
+        authorId:
+          type: string
+          format: uuid
+
+    BookInput:
+      type: object
+      required:
+        - title
+        - authorId
+      properties:
+        title:
+          type: string
+          example: "The Fellowship of the Ring"
+        isbn:
+          type: string
+          pattern: '^(?=(?:\\D*\\d){10}(?:(?:\\D*\\d){3})?$)[\\d-]+$'
+          example: "978-0261103573"
+        authorId:
+          type: string
+          format: uuid
+
+    Author:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "J.R.R. Tolkien"
+        biography:
+          type: string
+          example: "English writer, poet, philologist, and academic."
+
+    ErrorModel:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: "RESOURCE_NOT_FOUND"
+        message:
+          type: string
+          example: "The referenced item or dependency could not be found."
