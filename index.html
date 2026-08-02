@@ -2,41 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>API Reference Documentation</title>
+  <title>Library API Reference Documentation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Standard Swagger UI Layout Stylesheets -->
-  <link rel="stylesheet" href="https://jsdelivr.net" />
+  <!-- Clean font loading for the multi-column interface layout -->
+  <link href="https://googleapis.com|Roboto:300,400,700" rel="stylesheet">
   <style>
-    html { box-sizing: border-box; }
-    *, *:before, *:after { box-sizing: inherit; }
-    body { margin: 0; background: #fafafa; }
+    body { margin: 0; padding: 0; font-family: sans-serif; }
+    #loading-box { padding: 50px; text-align: center; color: #555; font-size: 18px; }
   </style>
 </head>
 <body>
 
-  <!-- The target container where the interactive console will load -->
-  <div id="swagger-ui"></div>
+  <!-- 1. The target viewport where Redocly will construct the 3-column system -->
+  <div id="api-docs-viewport">
+    <div id="loading-box">Initializing Library Specification Engine...</div>
+  </div>
 
-  <!-- Standard Swagger UI Distribution Bundles -->
-  <script src="https://jsdelivr.net"></script>
-  <script src="https://jsdelivr.net"></script>
+  <!-- 2. Pure, stable standalone package deployment asset -->
+  <script src="https://redoc.ly"></script>
   
   <script>
-    window.onload = () => {
-      window.ui = SwaggerUIBundle({
-        // 1. Yaml file
-        url: 'openapi.yaml', 
-        dom_id: '#swagger-ui',
-        deepLinking: true,
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIStandalonePreset
-        ],
-        layout: "BaseLayout",
-        // 2. Automatically generates interactive copy-paste cURL snippet tabs
-        requestSnippetsEnabled: true 
-      });
-    };
+    // 3. Force direct script initialization to bypass browser tag blocks
+    Redoc.init(
+      'openapi.yaml', // 👈 Ensure your filename matches this lowercase format exactly!
+      {
+        disableSearch: false,
+        expandResponses: "200,201",
+        theme: {
+          colors: {
+            primary: { main: '#333333' }
+          }
+        }
+      },
+      document.getElementById('api-docs-viewport'),
+      function(error) {
+        if (error) {
+          console.error("Initialization suspended: ", error);
+          document.getElementById('loading-box').innerHTML = 
+            "<h3 style='color:#d9534f;'>Documentation Rendering Suspended</h3>" +
+            "<p>The browser could not locate 'openapi.yaml'. Verify the filename casing in your repository.</p>";
+        }
+      }
+    );
   </script>
 </body>
 </html>
