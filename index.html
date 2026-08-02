@@ -2,38 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>API Reference Documentation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Core Swagger UI layout spreadsheet styles -->
+  <title>Library API Documentation</title>
   <link rel="stylesheet" href="https://unpkg.com" />
-  <style>
-    html { box-sizing: border-box; }
-    *, *:before, *:after { box-sizing: inherit; }
-    body { margin: 0; background: #fafafa; }
-  </style>
 </head>
 <body>
-
-  <!-- Element container where the classic blue-and-green UI elements render -->
   <div id="swagger-ui"></div>
-
-  <!-- Official bundles loaded securely with cross-origin execution permissions -->
-  <script src="https://unpkg.com" crossorigin></script>
-  <script src="https://unpkg.com" crossorigin></script>
-  
+  <script src="https://unpkg.com"></script>
   <script>
     window.onload = () => {
       window.ui = SwaggerUIBundle({
-        url: 'openapi.yaml', // 👈 Verify your YAML file matches this lowercase name format exactly!
+        url: 'openapi.yaml', // Points directly to your YAML file in the repository
         dom_id: '#swagger-ui',
-        deepLinking: true,
-        presets: [
-          SwaggerUIBundle.presets.apis,
-          SwaggerUIStandalonePreset
-        ],
-        layout: "BaseLayout",
-        // Dynamically configures the tabbed cURL request command panels
-        requestSnippetsEnabled: true 
       });
     };
   </script>
