@@ -2,39 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Library API Documentation</title>
-  <!-- Load Swagger UI standard stylesheets directly from CDN -->
-  <link rel="stylesheet" href="https://unpkg.com" />
+  <title>API Reference Documentation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Standard Swagger UI Layout Stylesheets -->
+  <link rel="stylesheet" href="https://jsdelivr.net" />
   <style>
-    html { box-sizing: border-box; overflow: -index-overflow-style; }
+    html { box-sizing: border-box; }
     *, *:before, *:after { box-sizing: inherit; }
     body { margin: 0; background: #fafafa; }
   </style>
 </head>
 <body>
-  <!-- Container where Swagger UI elements append -->
+
+  <!-- The target container where the interactive console will load -->
   <div id="swagger-ui"></div>
 
-  <!-- Load official Swagger UI bundle scripts -->
-  <script src="https://unpkg.com"></script>
-  <script src="https://unpkg.com"></script>
+  <!-- Standard Swagger UI Distribution Bundles -->
+  <script src="https://jsdelivr.net"></script>
+  <script src="https://jsdelivr.net"></script>
   
   <script>
     window.onload = () => {
       window.ui = SwaggerUIBundle({
-        url: 'openapi.yaml', // Points to YAML file
+        // 1. Yaml file
+        url: 'openapi.yaml', 
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
           SwaggerUIBundle.presets.apis,
           SwaggerUIStandalonePreset
         ],
-        plugins: [
-          SwaggerUIBundle.plugins.DownloadUrl
-        ],
         layout: "BaseLayout",
-        // Instructs Swagger UI to auto-generate code snippets dynamically
-        requestSnippetsEnabled: true
+        // 2. Automatically generates interactive copy-paste cURL snippet tabs
+        requestSnippetsEnabled: true 
       });
     };
   </script>
