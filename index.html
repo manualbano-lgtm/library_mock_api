@@ -2,48 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Library API Reference Documentation</title>
+  <title>API Reference Documentation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Clean font loading for the multi-column interface layout -->
-  <link href="https://googleapis.com|Roboto:300,400,700" rel="stylesheet">
+  <!-- Core Swagger UI layout spreadsheet styles -->
+  <link rel="stylesheet" href="https://unpkg.com" />
   <style>
-    body { margin: 0; padding: 0; font-family: sans-serif; }
-    #loading-box { padding: 50px; text-align: center; color: #555; font-size: 18px; }
+    html { box-sizing: border-box; }
+    *, *:before, *:after { box-sizing: inherit; }
+    body { margin: 0; background: #fafafa; }
   </style>
 </head>
 <body>
 
-  <!-- 1. The target viewport where Redocly will construct the 3-column system -->
-  <div id="api-docs-viewport">
-    <div id="loading-box">Initializing Library Specification Engine...</div>
-  </div>
+  <!-- Element container where the classic blue-and-green UI elements render -->
+  <div id="swagger-ui"></div>
 
-  <!-- 2. Pure, stable standalone package deployment asset -->
-  <script src="https://redoc.ly"></script>
+  <!-- Official bundles loaded securely with cross-origin execution permissions -->
+  <script src="https://unpkg.com" crossorigin></script>
+  <script src="https://unpkg.com" crossorigin></script>
   
   <script>
-    // 3. Force direct script initialization to bypass browser tag blocks
-    Redoc.init(
-      'openapi.yaml', // 👈 Ensure your filename matches this lowercase format exactly!
-      {
-        disableSearch: false,
-        expandResponses: "200,201",
-        theme: {
-          colors: {
-            primary: { main: '#333333' }
-          }
-        }
-      },
-      document.getElementById('api-docs-viewport'),
-      function(error) {
-        if (error) {
-          console.error("Initialization suspended: ", error);
-          document.getElementById('loading-box').innerHTML = 
-            "<h3 style='color:#d9534f;'>Documentation Rendering Suspended</h3>" +
-            "<p>The browser could not locate 'openapi.yaml'. Verify the filename casing in your repository.</p>";
-        }
-      }
-    );
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: 'openapi.yaml', // 👈 Verify your YAML file matches this lowercase name format exactly!
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        layout: "BaseLayout",
+        // Dynamically configures the tabbed cURL request command panels
+        requestSnippetsEnabled: true 
+      });
+    };
   </script>
 </body>
 </html>
